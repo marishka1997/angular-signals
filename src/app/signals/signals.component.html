@@ -1,0 +1,14 @@
+<section>
+    We have {{counter() | async}} widget(s)
+    <ul>
+        <li *ngFor="let note of notes()">
+            {{ note.description }}
+            <input [value]="note.description" (input)="updateNote($event, note.id)" />
+            <button (click)="removeNote(note.id)">Remove</button>
+        </li>
+    </ul>
+</section>
+<section>
+    <input id="add-widget" /><button (click)="addNote()">Add Widget</button>
+</section>
+<section><button (click)="clearAllNotes()">Clear All</button></section>
