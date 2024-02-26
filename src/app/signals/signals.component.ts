@@ -2,8 +2,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  computed,
 } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { signal } from '@angular/core';
 import { Note } from '../types/note.type';
 
@@ -16,40 +16,36 @@ import { Note } from '../types/note.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignalsComponent {
-  public notes = signal<Note[]>([{ id: 0, description: 'Thingamajig' }]);
-  public counter = computed(async () => {
-    return this.notes().length;
-  });
+  notes = signal<Note[]>([{ id: 0, description: 'Buy Milk' }]);
+
   constructor(private readonly _cdr: ChangeDetectorRef) {}
 
   addNote() {
     const description = (
-      document.getElementById('add-widget') as HTMLInputElement
+      document.getElementById('add-note') as HTMLInputElement
     )?.value;
 
     if (description) {
-      const notes: Note = {
+      const note: Note = {
         id: this.notes().length + 1,
         description: description,
       };
-      this.notes.update((notes: any) => [...notes, notes]);
+      this.notes.update((notes) => [...notes, note]);
     }
   }
 
   updateNote(event: Event, id: number) {
-    this.notes.mutate(async (notes: any[]) => {
-      let note = notes.find((w: { id: number }) => w.id === id);
+    this.notes.update((notes) => {
+      let note = notes.find((n) => n.id === id);
       if (note) {
         note.description = (event.target as HTMLInputElement).value;
       }
+      return notes;
     });
   }
 
   removeNote(index: number) {
-    this.notes.update(
-      (notes: any[]) =>
-        (notes = notes.filter((n: { id: number }) => n.id !== index))
-    );
+    this.notes.update((notes) => notes.filter((n) => n.id !== index));
   }
 
   clearAllNotes() {
